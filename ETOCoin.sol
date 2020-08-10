@@ -1,21 +1,22 @@
 pragma solidity >=0.4.21 <0.7.0;
 
-import 'SafeMath.sol';
-import 'Ownable.sol';
-import 'Address.sol';
-import 'IERC20.sol';
+import './SafeMath.sol';
+import './Ownable.sol';
+import './Address.sol';
+import './IERC20.sol';
 
 contract ETOCoin is Ownable, IERC20 {
 
     using SafeMath for uint256;
     using Address for address;
 
-    string public constant name = 'Electustok Coin';
-    string public constant symbol = 'Eto';
+    string public constant name = 'Electustok Net';
+    string public constant symbol = 'ETO';
     uint256 public constant decimals = 18;
     uint256 public constant totalSupply = 6400 * 10000 * 10 ** decimals;
 
-    uint256 public constant FounderAllocation = 6220 * 10000 * 10 ** decimals;
+    uint256 public constant FounderAllocation = 6400 * 10000 * 10 ** decimals;
+    uint256 public constant FounderActivitytyAmount = 220 * 10000 * 10 ** decimals;
     uint256 public constant FounderLockupAmount = 180 * 10000 * 10 ** decimals;
     uint256 public constant FounderLockupCliff = 180 days;
     uint256 public constant FounderReleaseAmount = 30 * 10000 * 10 ** decimals;
@@ -33,13 +34,14 @@ contract ETOCoin is Ownable, IERC20 {
     event ChangeFounder(address indexed previousFounder, address indexed newFounder);
     event SetMinter(address indexed minter);
     //only this accout[0] can't transfer
-    constructor(address _founder, address _operator) public {
+    constructor(address _founder, address _operator,address _activitor) public {
         require(_founder != address(0), "ElectustokCoin: founder is the zero address");
         require(_operator != address(0), "ElectustokCoin: operator is the zero address");
         founder = _founder;
         founderLockupStartTime = block.timestamp;
         _balances[address(this)] = totalSupply;
         _transfer(address(this), _operator, FounderAllocation.sub(FounderLockupAmount));
+        _transfer(address(this), _activitor, FounderAllocation.sub(FounderActivitytyAmount));
     }
 
     function release() public {
